@@ -29,6 +29,11 @@ Object of class '"power.htest"' with input and computed parameters
 computes power parameters based on the R-squared or eta-squared for
 generalized linear model with categorical dependent variables
 }
+\examples{
+r2=.10
+p=.5
+gzlmpower::power.lrt(es=r2,prob=p,df=2,power=.80)
+}
 \author{
 Marcello Gallucci
 }
