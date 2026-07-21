@@ -17,6 +17,9 @@
 #' @return Object of class '"power.htest"' with input and computed parameters
 #' @author Marcello Gallucci
 #' @examples
+#' r2=.10
+#' p=.5
+#' gzlmpower::power.lrt(es=r2,prob=p,df=2,power=.80)
 #' @rdname power
 #' @export
 

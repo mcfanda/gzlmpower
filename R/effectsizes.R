@@ -38,6 +38,7 @@ r2.default<-function(object,...) {
   r2adj<-1-(d1+df)/d0
   obj<-c(r2=r2,r2adj=r2adj)
   attr(obj,"df")<-df
+  class(obj)<-c(class(obj),"nwa")
   obj
 }
 
@@ -91,7 +92,7 @@ eta2.default<-function(object,...) {
   if (utils::hasName(args,"col"))
     col<-args$col
 
-  model0<-stats::update(object ,.~.)
+  model0<-stats::update(object ,.~1)
   dev0<-stats::deviance(model0)
   if (is.null(dev0))
      dev0<- as.numeric(-2*stats::logLik(model0))
@@ -117,15 +118,20 @@ eta2.lm<-function(object,...) {
   a<-car::Anova(object,type=3)
   model0<-stats::update(object ,.~1)
   w<-which(rownames(a) %in% c("(Intercept)","Residuals"))
-  res<-a$`Sum Sq`/(model0$df.residual*stats::sigma(model0)^2)
+
+  sse0<-model0$df.residual*stats::sigma(model0)^2
+  msem<-a$`Sum Sq`[nrow(a)]/object$df.residual   # Residuals row is last; MSE of the full model
+
+  res<-a$`Sum Sq`/sse0
   res<-matrix(res[-w],ncol=1)
   rownames(res)<-rownames(a)[-w]
   colnames(res)<-"Eta_squared"
 
-  eps<-(a$`Sum Sq`-a$`Sum Sq`[length(a$`Sum Sq`)]/object$df.residual)/(model0$df.residual*stats::sigma(model0)^2)
+  eps<-(a$`Sum Sq`-a$Df*msem)/sse0
   eps<-matrix(eps[-w],ncol=1)
   rownames(eps)<-rownames(a)[-w]
   colnames(eps)<-"Epsilon_squared"
+  eps[eps<0]<-0
   cbind(res,eps)
 
 }
@@ -182,21 +188,45 @@ eta2_partial.default<-function(object,...) {
   if (utils::hasName(args,"col"))
     col<-args$col
 
-  model0<-stats::update(object ,.~.)
-  dev0<-stats::deviance(model0)
-  if (is.null(dev0))
-    dev0<- as.numeric(-2*stats::logLik(model0))
+  devm<-stats::deviance(object)
+  if (is.null(devm))
+    devm<- as.numeric(-2*stats::logLik(object))
   a<-car::Anova(object,type=3,test=test)
   df<-a$Df
-  print(a)
-  # etas
-  res<-matrix(a[,col]/dev0,ncol = 1)
+  k<-sum(df)
+  # D_{m.x}, the deviance of the model without each term, obtained from the
+  # term's LR chi-squared (D_{m.x} - D_m) plus the full model deviance D_m
+  devmx<-devm+a[,col]
+  # petas: (D_{m.x}-D_m)/D_{m.x}
+  res<-matrix(a[,col]/devmx,ncol = 1)
   rownames(res)<-rownames(a)
   colnames(res)<-"Eta_squared"
-  #gammas
-  gam<-matrix((a[,col]-df)/dev0,ncol = 1)
+  #gammas: (D_{m.x}-D_m-u)/(D_{m.x}+k-u)
+  gam<-matrix((a[,col]-df)/(devmx+k-df),ncol = 1)
   rownames(gam)<-rownames(a)
   colnames(gam)<-"Epsilon_squared"
   gam[gam<0]<-0
   cbind(res,gam)
 }
+
+
+#'  Print numeric with attributes
+#'
+#'  Prints generic named vectors without printing their attributes
+
+#' @param object object of class "nwa" (numeric with attributes)
+#'          or \code{\link[stats]{deviance}} is defined.
+#' @param ... not implemented yet
+#' @author Marcello Gallucci
+#' @examples
+#' data(manymodels)
+#' model<-glm(ybin~x,family=binomial(),data=manymodels)
+#' print(r2(model))
+#' @export
+
+print.nwa<-function(x,...) {
+  a<-x
+  attr(a,"df")<-NULL
+  print(unclass(a))
+}
+
