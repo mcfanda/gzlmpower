@@ -21,7 +21,7 @@ r2 <- function(object, ...) UseMethod("r2")
 #' @rdname r2
 #' @export
 
-r2.default<-function(object,...) {
+r2.default<-function(object,test=FALSE,...) {
 
 
   d1<-stats::deviance(object)
@@ -36,7 +36,14 @@ r2.default<-function(object,...) {
 
   r2<-1-d1/d0
   r2adj<-1-(d1+df)/d0
-  obj<-c(r2=r2,r2adj=r2adj)
+  obj<-data.frame(r2=r2,r2adj=r2adj)
+  if (test) {
+    tab<-anova(object,model0)
+    if (nrow(tab)>1)  tab<-tab[2,,drop=FALSE]
+    names(tab)<-transnames(names(tab),list(test=c("Deviance","LR stat.","LR.stat"),p=c("Pr(>Chi)","Pr(Chi)","Pr(>Chisq)")))
+    obj$test<-tab$test
+    obj$p<-tab$p
+  }
   attr(obj,"df")<-df
   class(obj)<-c(class(obj),"nwa")
   obj
@@ -45,20 +52,53 @@ r2.default<-function(object,...) {
 #' @rdname r2
 #' @export
 
-r2.lm<-function(object,...) {
+r2.lm<-function(object,test=FALSE,...) {
 
   ss<-summary(object)
-  c(r2=  ss$r.squared,r2adj=  ss$adj.r.squared)
+  res<-data.frame(r2=  ss$r.squared,r2adj=  ss$adj.r.squared)
+  if (test) {
+    sm<-summary(object)
+    f <- unname(sm$fstatistic["value"])
+    df1 <- unname(sm$fstatistic["numdf"])
+    df2 <- unname(sm$fstatistic["dendf"])
+    p <- stats::pf(
+      f,
+      df1 = df1,
+      df2 = df2,
+      lower.tail = FALSE
+    )
+    res$test<-f
+    res$p<-p
+  }
+  res
 }
 
 #' @rdname r2
 #' @export
 
-r2.glm<-function(object,...) {
+r2.glm<-function(object,test=FALSE,...) {
 
-  r2.default(object)
+  r2.default(object,test=test)
 }
 
+#' @rdname r2
+#' @export
+
+
+r2.clm<-function(object,test=FALSE,...) {
+
+  r2.default(object,test=test)
+}
+
+#' @rdname r2
+#' @export
+
+r2.multinom<-function(object,test=FALSE,...) {
+
+  if (is.null(object$model))
+    stop("model of class `multinom` should be estimated with `nnet::multinom(...,model=TRUE)` option")
+  r2.default(object,test=test)
+}
 
 #'  Eta-squared and Epsilon-squared
 #'
@@ -229,6 +269,16 @@ eta2_partial.clm<-function(object,...) {
 
 }
 
+#' @rdname eta2_partial
+#' @export
+
+eta2_partial.multinom<-function(object,...) {
+
+  if (is.null(object$model))
+    stop("model of class `multinom` should be estimated with `nnet::multinom(...,model=TRUE)` option")
+  eta2_partial.default(object,test="Chisq",col="LR Chisq")
+
+}
 
 #'  Print numeric with attributes
 #'
