@@ -28,7 +28,7 @@ r2.default<-function(object,...) {
   if (is.null(d1)) {
     d1<- -2*stats::logLik(object)
   }
-  model0<-stats::update(object,.~1)
+  model0<-stats::update(object,.~1,data=object$model)
   df<-length(stats::coef(object))-length(stats::coef(model0))
   d0<-stats::deviance(model0)
   if (is.null(d0))
@@ -92,7 +92,7 @@ eta2.default<-function(object,...) {
   if (utils::hasName(args,"col"))
     col<-args$col
 
-  model0<-stats::update(object ,.~1)
+  model0<-stats::update(object ,.~1,data=object$model)
   dev0<-stats::deviance(model0)
   if (is.null(dev0))
      dev0<- as.numeric(-2*stats::logLik(model0))
@@ -116,7 +116,7 @@ eta2.default<-function(object,...) {
 eta2.lm<-function(object,...) {
 
   a<-car::Anova(object,type=3)
-  model0<-stats::update(object ,.~1)
+  model0<-stats::update(object ,.~1,data=object$model)
   w<-which(rownames(a) %in% c("(Intercept)","Residuals"))
 
   sse0<-model0$df.residual*stats::sigma(model0)^2
@@ -151,6 +151,17 @@ eta2.glm<-function(object,...) {
 eta2.clm<-function(object,...) {
 
   eta2.default(object,test="Chisq",col="Chisq")
+
+}
+
+#' @rdname eta2
+#' @export
+
+eta2.multinom<-function(object,...) {
+
+  if (is.null(object$model))
+    stop("model of class `multinom` should be estimated with `nnet::multinom(...,model=TRUE)` option")
+  eta2.default(object,test="Chisq",col="LR Chisq")
 
 }
 
@@ -207,6 +218,15 @@ eta2_partial.default<-function(object,...) {
   colnames(gam)<-"Epsilon_squared"
   gam[gam<0]<-0
   cbind(res,gam)
+}
+
+#' @rdname eta2_partial
+#' @export
+
+eta2_partial.clm<-function(object,...) {
+
+  eta2_partial.default(object,test="Chisq",col="Chisq")
+
 }
 
 

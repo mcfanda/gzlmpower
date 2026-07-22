@@ -6,6 +6,7 @@
 \alias{eta2.lm}
 \alias{eta2.glm}
 \alias{eta2.clm}
+\alias{eta2.multinom}
 \alias{eta2_partial.default}
 \title{Eta-squared and Epsilon-squared}
 \usage{
@@ -18,6 +19,8 @@ eta2(object, ...)
 \method{eta2}{glm}(object, ...)
 
 \method{eta2}{clm}(object, ...)
+
+\method{eta2}{multinom}(object, ...)
 
 \method{eta2_partial}{default}(object, ...)
 }
