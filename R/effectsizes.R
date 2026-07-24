@@ -126,17 +126,21 @@ eta2.default<-function(object,...) {
   args<-list(...)
   test<-"LR"
   col<-"LR Chisq"
+  a<-NULL
 
   if (utils::hasName(args,"test"))
      test<-args$test
   if (utils::hasName(args,"col"))
     col<-args$col
+  if (utils::hasName(args,"anova_table"))
+    a<-args$anova_table
 
   model0<-stats::update(object ,.~1,data=object$model)
   dev0<-stats::deviance(model0)
   if (is.null(dev0))
      dev0<- as.numeric(-2*stats::logLik(model0))
-  a<-car::Anova(object,type=3,test=test)
+  if (is.null(a))
+    a<-car::Anova(object,type=3,test=test)
   df<-a$Df
   # etas
   res<-matrix(a[,col]/dev0,ncol = 1)
@@ -147,7 +151,9 @@ eta2.default<-function(object,...) {
   rownames(gam)<-rownames(a)
   colnames(gam)<-"Epsilon_squared"
   gam[gam<0]<-0
-  cbind(res,gam)
+  out<-cbind(res,gam)
+  attr(out,"test")<-a
+  out
 }
 
 #' @rdname eta2
@@ -155,7 +161,8 @@ eta2.default<-function(object,...) {
 
 eta2.lm<-function(object,...) {
 
-  a<-car::Anova(object,type=3)
+  args<-list(...)
+  a<-if (utils::hasName(args,"anova_table")) args$anova_table else car::Anova(object,type=3)
   model0<-stats::update(object ,.~1,data=object$model)
   w<-which(rownames(a) %in% c("(Intercept)","Residuals"))
 
@@ -172,7 +179,9 @@ eta2.lm<-function(object,...) {
   rownames(eps)<-rownames(a)[-w]
   colnames(eps)<-"Epsilon_squared"
   eps[eps<0]<-0
-  cbind(res,eps)
+  out<-cbind(res,eps)
+  attr(out,"test")<-a
+  out
 
 }
 
@@ -190,7 +199,10 @@ eta2.glm<-function(object,...) {
 
 eta2.clm<-function(object,...) {
 
-  eta2.default(object,test="Chisq",col="Chisq")
+  # car::Anova()/ordinal::clm's own anova() both compute a Wald test for a single `clm`
+  # fit (there is no refit-based Type III LR test available for this class), so a genuine
+  # per-term likelihood-ratio table is built directly instead; see .clm_anova_lr().
+  eta2.default(object,test="Chisq",col="Chisq",anova_table=.clm_anova_lr(object))
 
 }
 
@@ -233,16 +245,20 @@ eta2_partial.default<-function(object,...) {
   args<-list(...)
   test<-"LR"
   col<-"LR Chisq"
+  a<-NULL
 
   if (utils::hasName(args,"test"))
     test<-args$test
   if (utils::hasName(args,"col"))
     col<-args$col
+  if (utils::hasName(args,"anova_table"))
+    a<-args$anova_table
 
   devm<-stats::deviance(object)
   if (is.null(devm))
     devm<- as.numeric(-2*stats::logLik(object))
-  a<-car::Anova(object,type=3,test=test)
+  if (is.null(a))
+    a<-car::Anova(object,type=3,test=test)
   df<-a$Df
   k<-sum(df)
   # D_{m.x}, the deviance of the model without each term, obtained from the
@@ -265,7 +281,9 @@ eta2_partial.default<-function(object,...) {
 
 eta2_partial.clm<-function(object,...) {
 
-  eta2_partial.default(object,test="Chisq",col="Chisq")
+  # see eta2.clm(): car::Anova()/clm's own anova() are Wald-based for a single fit, so a
+  # genuine per-term likelihood-ratio table is built directly via .clm_anova_lr().
+  eta2_partial.default(object,test="Chisq",col="Chisq",anova_table=.clm_anova_lr(object))
 
 }
 
