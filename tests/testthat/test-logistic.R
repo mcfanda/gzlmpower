@@ -9,7 +9,7 @@ d  <- data.frame(x1, x2, y)
 model  <- glm(y ~   x2, data = d, family = binomial())
 model0 <- glm(y ~ 1,       data = d, family = binomial())
 # anova(model,model0)
-eta2(model,test=T)
+eta2(model)
 confint(a)
 
 
