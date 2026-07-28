@@ -2,9 +2,15 @@
 % Please edit documentation in R/effectsizes.R
 \name{eta2_partial}
 \alias{eta2_partial}
+\alias{eta2_partial.clm}
+\alias{eta2_partial.multinom}
 \title{Partial Eta-squared and Partial Epsilon-squared}
 \usage{
 eta2_partial(object, ...)
+
+\method{eta2_partial}{clm}(object, ...)
+
+\method{eta2_partial}{multinom}(object, ...)
 }
 \arguments{
 \item{object}{object of class "glm", or an object for which the function \code{\link[stats]{drop1}}

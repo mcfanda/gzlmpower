@@ -5,15 +5,21 @@
 \alias{r2.default}
 \alias{r2.lm}
 \alias{r2.glm}
+\alias{r2.clm}
+\alias{r2.multinom}
 \title{Model R-squared}
 \usage{
 r2(object, ...)
 
-\method{r2}{default}(object, ...)
+\method{r2}{default}(object, test = FALSE, ...)
 
-\method{r2}{lm}(object, ...)
+\method{r2}{lm}(object, test = FALSE, ...)
 
-\method{r2}{glm}(object, ...)
+\method{r2}{glm}(object, test = FALSE, ...)
+
+\method{r2}{clm}(object, test = FALSE, ...)
+
+\method{r2}{multinom}(object, test = FALSE, ...)
 }
 \arguments{
 \item{object}{object of class "glm", or an object for which the function \code{\link[stats]{deviance}}

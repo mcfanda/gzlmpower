@@ -43,7 +43,11 @@ power.lrt <- function(es,prob,df=NULL, N=NULL,sig.level=.05, power=NULL) {
       res$w<-es
 
   names(res)[1]<-"es"
-  if ((length(prob)-1)>df)
+  # The proportional-odds (ordinal) model always carries exactly 1 df per predictor
+  # regardless of the number of outcome categories, unlike the nominal (multinomial)
+  # coding this check otherwise assumes -- so that specific, valid pattern is exempted
+  # rather than flagged as a likely df mistake.
+  if ((length(prob)-1)>df && !(df==1 && length(prob)>2))
     message("DF are less than the number of dummies representing the dependent variable. Please be sure that the df are correct.")
   res
 
