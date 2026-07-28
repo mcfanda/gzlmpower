@@ -146,7 +146,6 @@ eta2.default<-function(object,...) {
   res<-matrix(a[,col]/dev0,ncol = 1)
   rownames(res)<-rownames(a)
   colnames(res)<-"Eta_squared"
-  print(res)
   #gammas
   gam<-matrix((a[,col]-df)/dev0,ncol = 1)
   rownames(gam)<-rownames(a)
