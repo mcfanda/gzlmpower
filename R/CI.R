@@ -14,8 +14,8 @@ ci_eta2 <- function(eta2, u, D0 , conf.level = 0.95) {
   if (!requireNamespace("MBESS", quietly = TRUE)) {
     stop("Package 'MBESS' is required. Install it with install.packages('MBESS').")
   }
-  if (is.null(D0) && is.null(D_mx)) {
-    stop("Supply at least one of D0 (for eta2) or D_mx (for partial eta2).")
+  if (is.null(D0)) {
+    stop("Supply  D0 (for eta2).")
   }
   Qx<-eta2*D0
   # Noncentrality-parameter CI via inversion of the noncentral chi-square CDF.
@@ -61,8 +61,8 @@ ci_eta2p <- function(eta2p, u, Dmx , conf.level = 0.95) {
   if (!requireNamespace("MBESS", quietly = TRUE)) {
     stop("Package 'MBESS' is required. Install it with install.packages('MBESS').")
   }
-  if (is.null(D0) && is.null(D_mx)) {
-    stop("Supply at least one of D0 (for eta2) or D_mx (for partial eta2).")
+  if ( is.null(D_mx)) {
+    stop("Supply  D_mx for partial eta2).")
   }
   Qx<-eta2p*Dmx
   # Noncentrality-parameter CI via inversion of the noncentral chi-square CDF.
