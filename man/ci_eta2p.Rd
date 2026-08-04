@@ -22,5 +22,5 @@ A data.frame  with eta2, lower and upper confidence limits.
 Confidence interval for partial eta-squared
 }
 \examples{
-ci_eta2p(eta2 = .20, u = 2, Dmx = 1000)
+ci_eta2p(eta2p = .20, u = 2, Dmx = 1000)
 }

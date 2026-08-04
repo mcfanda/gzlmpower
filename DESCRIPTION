@@ -6,8 +6,8 @@ Author: Marcello Gallucci
 Maintainer: marcello gallucci <mcfanda@gmail.com>
 Description: Functions to compute model-based effect size indices (eta-squared and epsilon-squared) and power parameters for generalized linear models. Conducts power analysis to determine required sample size, minimum effect size, critical alpha, or power based on R-squared or eta-squared.
 Imports: pwr, car
-Suggests: testthat (>= 3.0.0), nnet, MASS, ordinal
-License: GPL-3
+Suggests: testthat (>= 3.0.0), nnet, MASS, ordinal, MBESS
+License: GPL-3 + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Config/roxygen2/version: 8.0.0

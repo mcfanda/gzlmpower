@@ -9,26 +9,36 @@
 \alias{r2.multinom}
 \title{Model R-squared}
 \usage{
-r2(object, ...)
+r2(object, test = FALSE, ci = FALSE, ci_width = 0.95, quiet = FALSE, ...)
 
-\method{r2}{default}(object, test = FALSE, ...)
+\method{r2}{default}(object, test = FALSE, ci = FALSE, ci_width = 0.95, quiet = FALSE, ...)
 
-\method{r2}{lm}(object, test = FALSE, ...)
+\method{r2}{lm}(object, test = FALSE, ci = FALSE, ci_width = 0.95, quiet = FALSE, ...)
 
-\method{r2}{glm}(object, test = FALSE, ...)
+\method{r2}{glm}(object, test = FALSE, ci = FALSE, ci_width = 0.95, quiet = FALSE, ...)
 
-\method{r2}{clm}(object, test = FALSE, ...)
+\method{r2}{clm}(object, test = FALSE, ci = FALSE, ci_width = 0.95, quiet = FALSE, ...)
 
-\method{r2}{multinom}(object, test = FALSE, ...)
+\method{r2}{multinom}(object, test = FALSE, ci = FALSE, ci_width = 0.95, quiet = FALSE, ...)
 }
 \arguments{
 \item{object}{object of class "glm", or an object for which the function \code{\link[stats]{deviance}}
 or \code{\link[stats]{deviance}} is defined.}
 
+\item{test}{logical. If TRUE, include the associated ANOVA table.}
+
+\item{ci}{logical. If TRUE, compute a confidence interval for the primary index.}
+
+\item{ci_width}{numeric confidence level between 0 and 1.}
+
+\item{quiet}{logical. If TRUE, muffle warnings and messages emitted while
+computing the index.}
+
 \item{...}{not implemented yet}
 }
 \value{
-an numeric vector with the R-square and adjusted R-square
+A list with `indices`, optional `anova` and `ci` tables, and the
+  deviance or sum-of-squares quantities used in the calculations.
 }
 \description{
 computes the R-squared for several generalized linear models

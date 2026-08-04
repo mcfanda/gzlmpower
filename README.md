@@ -33,6 +33,7 @@ Some model classes used in the examples below come from suggested packages:
 - `MASS` for `polr()`
 - `nnet` for `multinom()`
 - `ordinal` for `clm()`
+- `MBESS` for confidence intervals
 
 ## What It Provides
 
@@ -168,6 +169,18 @@ power.lrt(
   sig.level = 0.05
 )
 ```
+
+## Confidence Intervals
+
+Set `ci = TRUE` to add noncentral-chi-square confidence intervals to the result. Use `ci_width` to control the confidence level:
+
+```r
+fit_results <- eta2(fit_binom, ci = TRUE, ci_width = 0.95)
+fit_results$ci
+print(fit_results)
+```
+
+The intervals are returned in `$ci` and are printed beside the primary effect-size index. For `eta2_partial()`, the interval calculation uses the residual deviance or residual sum of squares plus the corresponding effect contribution.
 
 ## Notes
 

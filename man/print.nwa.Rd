@@ -7,10 +7,10 @@
 \method{print}{nwa}(x, ...)
 }
 \arguments{
-\item{...}{not implemented yet}
-
-\item{object}{object of class "nwa" (numeric with attributes)
+\item{x}{object of class "nwa" (numeric with attributes)
 or \code{\link[stats]{deviance}} is defined.}
+
+\item{...}{not implemented yet}
 }
 \description{
 Prints generic named vectors without printing their attributes
