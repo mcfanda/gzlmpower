@@ -1,5 +1,5 @@
 #library(gzlmpower)
-set.seed(123)
+
 n  <- 200
 x1 <- rnorm(n)
 x2 <- rnorm(n)
@@ -8,9 +8,6 @@ d  <- data.frame(x1, x2, y)
 
 model  <- glm(y ~   x2, data = d, family = binomial())
 model0 <- glm(y ~ 1,       data = d, family = binomial())
-# anova(model,model0)
-eta2(model)
-confint(a)
 
 
 test_that("r2() matches the deviance-ratio formula for a logistic model", {

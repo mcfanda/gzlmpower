@@ -70,6 +70,9 @@ r2.lm<-function(object,test=FALSE,...) {
     res$test<-f
     res$p<-p
   }
+  out<-res
+  class(out)<-c("nwa",class(out))
+
   res
 }
 
@@ -150,9 +153,9 @@ eta2.default<-function(object,...) {
   gam<-matrix((a[,col]-df)/dev0,ncol = 1)
   rownames(gam)<-rownames(a)
   colnames(gam)<-"Epsilon_squared"
-  gam[gam<0]<-0
   out<-cbind(res,gam)
   attr(out,"test")<-a
+  class(out)<-c("nwa",class(out))
   out
 }
 
@@ -178,9 +181,9 @@ eta2.lm<-function(object,...) {
   eps<-matrix(eps[-w],ncol=1)
   rownames(eps)<-rownames(a)[-w]
   colnames(eps)<-"Epsilon_squared"
-  eps[eps<0]<-0
   out<-cbind(res,eps)
   attr(out,"test")<-a
+  class(out)<-c("nwa",class(out))
   out
 
 }
@@ -267,13 +270,15 @@ eta2_partial.default<-function(object,...) {
   # petas: (D_{m.x}-D_m)/D_{m.x}
   res<-matrix(a[,col]/devmx,ncol = 1)
   rownames(res)<-rownames(a)
-  colnames(res)<-"Eta_squared"
+  colnames(res)<-"Eta2_p"
   #gammas: (D_{m.x}-D_m-u)/(D_{m.x}+k-u)
   gam<-matrix((a[,col]-df)/(devmx+k-df),ncol = 1)
   rownames(gam)<-rownames(a)
-  colnames(gam)<-"Epsilon_squared"
-  gam[gam<0]<-0
-  cbind(res,gam)
+  colnames(gam)<-"Epsilon2_p"
+  out<-cbind(res,gam)
+  class(out)<-c("nwa",class(out))
+
+  out
 }
 
 #' @rdname eta2_partial
@@ -315,6 +320,17 @@ eta2_partial.multinom<-function(object,...) {
 print.nwa<-function(x,...) {
   a<-x
   attr(a,"df")<-NULL
+  attr(a,"test")<-NULL
   print(unclass(a))
+  if ("Epsilon_squared" %in% names(a))
+    if (any(a$Epsilon_squared<0)) {
+      message("Negative Epsilon -squared are conventionally reported as zero")
+    }
+
+  if ("r2adj" %in% names(a))
+    if (any(a$r2adj<0)) {
+      message("Negative Adjusted R-squared are conventionally reported as zero")
+    }
+
 }
 
