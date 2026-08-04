@@ -7,31 +7,91 @@
 \alias{eta2.glm}
 \alias{eta2.clm}
 \alias{eta2.multinom}
-\alias{eta2_partial.default}
 \title{Eta-squared and Epsilon-squared}
 \usage{
-eta2(object, ...)
+eta2(object, test = FALSE, ci = FALSE, ci_width = 0.95, quiet = FALSE, ...)
 
-\method{eta2}{default}(object, ...)
+\method{eta2}{default}(
+  object,
+  test = FALSE,
+  ci = FALSE,
+  ci_width = 0.95,
+  quiet = FALSE,
+  .test = "LR",
+  col = NULL,
+  anova_table = NULL,
+  ...
+)
 
-\method{eta2}{lm}(object, ...)
+\method{eta2}{lm}(
+  object,
+  test = FALSE,
+  ci = FALSE,
+  ci_width = 0.95,
+  quiet = FALSE,
+  anova_table = NULL,
+  ...
+)
 
-\method{eta2}{glm}(object, ...)
+\method{eta2}{glm}(
+  object,
+  test = FALSE,
+  ci = FALSE,
+  ci_width = 0.95,
+  quiet = FALSE,
+  .test = "LR",
+  col = NULL,
+  anova_table = NULL,
+  ...
+)
 
-\method{eta2}{clm}(object, ...)
+\method{eta2}{clm}(
+  object,
+  test = FALSE,
+  ci = FALSE,
+  ci_width = 0.95,
+  quiet = FALSE,
+  col = "Chisq",
+  anova_table = NULL,
+  ...
+)
 
-\method{eta2}{multinom}(object, ...)
-
-\method{eta2_partial}{default}(object, ...)
+\method{eta2}{multinom}(
+  object,
+  test = FALSE,
+  ci = FALSE,
+  ci_width = 0.95,
+  quiet = FALSE,
+  .test = "LR",
+  col = "LR Chisq",
+  anova_table = NULL,
+  ...
+)
 }
 \arguments{
 \item{object}{object of class "glm", or an object for which the function \code{\link[stats]{drop1}}
 or \code{\link[stats]{deviance}} is defined.}
 
+\item{test}{logical. If TRUE, include the associated ANOVA table.}
+
+\item{ci}{logical. If TRUE, compute confidence intervals for the indices.}
+
+\item{ci_width}{numeric confidence level between 0 and 1.}
+
+\item{quiet}{logical. If TRUE, muffle warnings and messages emitted while
+computing the indices.}
+
 \item{...}{not implemented yet}
+
+\item{.test}{character. Test statistic passed to `car::Anova()` where applicable.}
+
+\item{col}{character. Column of the ANOVA table used as the effect statistic.}
+
+\item{anova_table}{optional precomputed ANOVA table.}
 }
 \value{
-an anova table with R
+A list with `indices`, optional `anova` and `ci` tables, and the
+  deviance or sum-of-squares quantities used in the calculations.
 }
 \description{
 Computes the eta-squared and epsilon-squared indices for several generalized linear models

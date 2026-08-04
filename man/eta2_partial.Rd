@@ -2,24 +2,103 @@
 % Please edit documentation in R/effectsizes.R
 \name{eta2_partial}
 \alias{eta2_partial}
+\alias{eta2_partial.default}
+\alias{eta2_partial.lm}
+\alias{eta2_partial.glm}
 \alias{eta2_partial.clm}
 \alias{eta2_partial.multinom}
 \title{Partial Eta-squared and Partial Epsilon-squared}
 \usage{
-eta2_partial(object, ...)
+eta2_partial(
+  object,
+  test = FALSE,
+  ci = FALSE,
+  ci_width = 0.95,
+  quiet = FALSE,
+  ...
+)
 
-\method{eta2_partial}{clm}(object, ...)
+\method{eta2_partial}{default}(
+  object,
+  test = FALSE,
+  ci = FALSE,
+  ci_width = 0.95,
+  quiet = FALSE,
+  .test = "LR",
+  col = NULL,
+  anova_table = NULL,
+  ...
+)
 
-\method{eta2_partial}{multinom}(object, ...)
+\method{eta2_partial}{lm}(
+  object,
+  test = FALSE,
+  ci = FALSE,
+  ci_width = 0.95,
+  quiet = FALSE,
+  anova_table = NULL,
+  ...
+)
+
+\method{eta2_partial}{glm}(
+  object,
+  test = FALSE,
+  ci = FALSE,
+  ci_width = 0.95,
+  quiet = FALSE,
+  .test = "LR",
+  col = NULL,
+  anova_table = NULL,
+  ...
+)
+
+\method{eta2_partial}{clm}(
+  object,
+  test = FALSE,
+  ci = FALSE,
+  ci_width = 0.95,
+  quiet = FALSE,
+  col = "Chisq",
+  anova_table = NULL,
+  ...
+)
+
+\method{eta2_partial}{multinom}(
+  object,
+  test = FALSE,
+  ci = FALSE,
+  ci_width = 0.95,
+  quiet = FALSE,
+  .test = "LR",
+  col = "LR Chisq",
+  anova_table = NULL,
+  ...
+)
 }
 \arguments{
 \item{object}{object of class "glm", or an object for which the function \code{\link[stats]{drop1}}
 or \code{\link[stats]{deviance}} is defined.}
 
+\item{test}{logical. If TRUE, include the associated ANOVA table.}
+
+\item{ci}{logical. If TRUE, compute confidence intervals for the indices.}
+
+\item{ci_width}{numeric confidence level between 0 and 1.}
+
+\item{quiet}{logical. If TRUE, muffle warnings and messages emitted while
+computing the indices.}
+
 \item{...}{not implemented yet}
+
+\item{.test}{character. Test statistic passed to `car::Anova()` where applicable.}
+
+\item{col}{character. Column of the ANOVA table used as the effect statistic.}
+
+\item{anova_table}{optional precomputed ANOVA table.}
 }
 \value{
-an anova table with R
+A list with `indices`, optional `anova` and `ci` tables, and the
+  deviance or sum-of-squares quantities used in the calculations.
 }
 \description{
 Computes the partial eta-squared and partial epsilon-squared indices for several generalized linear models

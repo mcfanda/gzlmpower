@@ -9,6 +9,8 @@
 #'
 #' @examples
 #' ci_eta2(eta2 = .20, u = 2, D0 = 1000)
+#' @export
+
 ci_eta2 <- function(eta2, u, D0 , conf.level = 0.95) {
 
   if (!requireNamespace("MBESS", quietly = TRUE)) {
@@ -55,14 +57,16 @@ ci_eta2 <- function(eta2, u, D0 , conf.level = 0.95) {
 #' @return A data.frame  with eta2, lower and upper confidence limits.
 #'
 #' @examples
-#' ci_eta2p(eta2 = .20, u = 2, Dmx = 1000)
+#' ci_eta2p(eta2p = .20, u = 2, Dmx = 1000)
+#' @export
+
 ci_eta2p <- function(eta2p, u, Dmx , conf.level = 0.95) {
 
   if (!requireNamespace("MBESS", quietly = TRUE)) {
     stop("Package 'MBESS' is required. Install it with install.packages('MBESS').")
   }
-  if ( is.null(D_mx)) {
-    stop("Supply  D_mx for partial eta2).")
+  if (is.null(Dmx)) {
+    stop("Supply Dmx for partial eta2.")
   }
   Qx<-eta2p*Dmx
   # Noncentrality-parameter CI via inversion of the noncentral chi-square CDF.
@@ -89,4 +93,43 @@ ci_eta2p <- function(eta2p, u, Dmx , conf.level = 0.95) {
   attr(results,"lambda.U")<-lambda_U
   attr(results,"conf.level")<-conf.level
   results
+}
+
+
+
+# CI helpers are evaluated only when the user requests confidence intervals.
+.validate_ci_width <- function(ci_width) {
+  if (!is.numeric(ci_width) || length(ci_width) != 1L ||
+      !is.finite(ci_width) || ci_width <= 0 || ci_width >= 1) {
+    stop("ci_width must be a single number between 0 and 1")
+  }
+  ci_width
+}
+
+.ci_eta2_table <- function(estimate, df, D0, conf.level, row_names = NULL) {
+  conf.level <- .validate_ci_width(conf.level)
+  estimate <- as.numeric(estimate)
+  df <- rep(df, length.out = length(estimate))
+  D0 <- rep(D0, length.out = length(estimate))
+  out <- do.call(rbind, lapply(seq_along(estimate), function(i) {
+    ci_eta2(estimate[i], df[i], D0[i], conf.level)
+  }))
+  if (is.null(row_names))
+    row_names <- as.character(seq_along(estimate))
+  rownames(out) <- row_names
+  out
+}
+
+.ci_eta2p_table <- function(estimate, df, Dmx, conf.level, row_names = NULL) {
+  conf.level <- .validate_ci_width(conf.level)
+  estimate <- as.numeric(estimate)
+  df <- rep(df, length.out = length(estimate))
+  Dmx <- rep(Dmx, length.out = length(estimate))
+  out <- do.call(rbind, lapply(seq_along(estimate), function(i) {
+    ci_eta2p(estimate[i], df[i], Dmx[i], conf.level)
+  }))
+  if (is.null(row_names))
+    row_names <- as.character(seq_along(estimate))
+  rownames(out) <- row_names
+  out
 }

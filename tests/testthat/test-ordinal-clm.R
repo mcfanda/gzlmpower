@@ -9,10 +9,10 @@ test_that("r2() matches the deviance-ratio formula for an ordinal (clm) model", 
   expected_r2    <- 1 - dev_clm(model_clm) / dev_clm(model_clm0)
   expected_r2adj <- 1 - (dev_clm(model_clm) + k) / dev_clm(model_clm0)
 
-  expect_equal(unname(res["r2"]),    expected_r2)
-  expect_equal(unname(res["r2adj"]), expected_r2adj)
-  expect_true(res["r2adj"] <= res["r2"])
-  expect_true(res["r2"] >= 0 && res["r2"] <= 1)
+  expect_equal(res$indices$r2,    expected_r2)
+  expect_equal(res$indices$r2adj, expected_r2adj)
+  expect_true(res$indices$r2adj <= res$indices$r2)
+  expect_true(res$indices$r2 >= 0 && res$indices$r2 <= 1)
 })
 
 test_that("eta2() matches a genuine per-term likelihood-ratio test for an ordinal (clm) model", {
@@ -33,10 +33,10 @@ test_that("eta2() matches a genuine per-term likelihood-ratio test for an ordina
   expected_eta2 <- c(chisq_x1, chisq_x2) / dev_clm(model_clm0)
   expected_eps2 <- pmax((c(chisq_x1, chisq_x2) - df) / dev_clm(model_clm0), 0)
 
-  expect_equal(unname(res[, "Eta_squared"]),     unname(expected_eta2), tolerance = 1e-6)
-  expect_equal(unname(res[, "Epsilon_squared"]), unname(expected_eps2), tolerance = 1e-6)
-  expect_true(all(res[, "Epsilon_squared"] <= res[, "Eta_squared"]))
-  expect_true(all(res >= 0 & res <= 1))
+  expect_equal(unname(res$indices[, "Eta_squared"]),     unname(expected_eta2), tolerance = 1e-6)
+  expect_equal(unname(res$indices[, "Epsilon_squared"]), unname(expected_eps2), tolerance = 1e-6)
+  expect_true(all(res$indices[, "Epsilon_squared"] <= res$indices[, "Eta_squared"]))
+  expect_true(all(res$indices >= 0 & res$indices <= 1))
 })
 
 test_that("eta2_partial() matches a genuine per-term likelihood-ratio test for an ordinal (clm) model", {
@@ -55,8 +55,8 @@ test_that("eta2_partial() matches a genuine per-term likelihood-ratio test for a
   expected_eta2 <- chisq / devmx
   expected_eps2 <- pmax((chisq - df) / (devmx + k - df), 0)
 
-  expect_equal(unname(res[, "Eta_squared"]),     unname(expected_eta2), tolerance = 1e-6)
-  expect_equal(unname(res[, "Epsilon_squared"]), unname(expected_eps2), tolerance = 1e-6)
-  expect_true(all(res[, "Epsilon_squared"] <= res[, "Eta_squared"]))
-  expect_true(all(res >= 0 & res <= 1))
+  expect_equal(unname(res$indices[, "Eta2_p"]),     unname(expected_eta2), tolerance = 1e-6)
+  expect_equal(unname(res$indices[, "Epsilon2_p"]), unname(expected_eps2), tolerance = 1e-6)
+  expect_true(all(res$indices[, "Epsilon2_p"] <= res$indices[, "Eta2_p"]))
+  expect_true(all(res$indices >= 0 & res$indices <= 1))
 })
